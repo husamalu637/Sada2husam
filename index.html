@@ -6,144 +6,159 @@
     <title>صدى الطفولة | روبن هود</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00d2ff;
-            --accent: #ff9800;
-            --bg: #0b0f19;
-            --card: #161e2e;
-        }
-
+        :root { --primary: #00d2ff; --accent: #ff9800; --bg: #0b0f19; --card: #161e2e; }
+        * { user-select: none; }
         body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--bg); color: white; font-family: 'Cairo', sans-serif;
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden; position: relative;
         }
-
         header {
-            width: 100%;
-            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
-            padding: 15px 0;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            width: 100%; background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            padding: 40px 0; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-
-        .main-container {
-            max-width: 900px;
-            width: 95%;
-            margin: 10px auto;
-            text-align: center;
+        header h1 { margin: 0; font-size: 2.2rem; }
+        header p { margin: 5px 0 0; font-size: 1rem; }
+        .banner-top, .banner-bottom {
+            width: 100%; text-align: center; background: #0a0e15; padding: 20px 0;
+            margin: 0 auto; display: flex; justify-content: center; align-items: center;
+            border-radius: 12px; overflow-x: auto;
         }
-
+        .banner-top { max-width: 900px; margin-top: 20px; margin-bottom: 10px; }
+        .banner-bottom { max-width: 900px; margin-top: 30px; margin-bottom: 20px; }
+        .main-container { max-width: 900px; width: 95%; margin: 0 auto; text-align: center; }
+        .video-wrapper-outer { position: relative; z-index: 1; }
         .video-display-area {
-            background: #000;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 3px solid var(--primary);
-            margin: 15px 0;
-            display: none; /* يظهر عند النقر على حلقة */
+            background: #000; border-radius: 20px; overflow: hidden; border: 3px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2); margin-bottom: 30px; display: none; position: relative;
         }
-
         .responsive-iframe {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
+            position: relative; width: 100%; aspect-ratio: 16 / 9;
+            background: #000; overflow: hidden;
         }
-
+        /* رفع المشغل الأساسي - نفس إعدادات عدنان ولينا */
         .responsive-iframe iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+            position: absolute; top: -160px; left: 0; width: 100%; height: calc(100% + 160px);
+            border: 0; overflow: hidden; pointer-events: auto;
         }
-
         .episodes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-            gap: 10px;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 20px;
-            margin-top: 10px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 15px; background: var(--card); padding: 25px;
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-
         .ep-btn {
-            background: #252f44;
-            color: white;
-            border: none;
-            padding: 15px 0;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
+            background: #252f44; color: white; border: 2px solid transparent;
+            padding: 15px 0; border-radius: 12px; font-size: 1.2rem;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
         }
-
-        .ep-btn:hover { background: var(--primary); }
-        .ep-btn.active { background: var(--accent); color: black; }
-
-        h2, h3 { margin: 10px 0; }
+        .ep-btn:hover { background: var(--primary); transform: scale(1.1); border-color: white; }
+        .ep-btn.active { background: var(--accent); color: black; box-shadow: 0 0 15px var(--accent); }
+        .info-text { margin-top: 20px; color: var(--primary); font-size: 1.1rem; }
+        footer { margin-top: 50px; padding: 20px; opacity: 0.4; font-size: 0.8rem; }
+        h2#status-msg { margin-top: 10px; }
+        @media (max-width: 600px) {
+            .episodes-grid { grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 10px; padding: 15px; }
+            .ep-btn { padding: 10px 0; font-size: 1rem; }
+        }
     </style>
 </head>
-<body onload="loadEpisodes()">
+<body>
 
 <header>
-    <h1>صدى الطفولة</h1>
+    <h1>🎬 صدى الطفولة</h1>
+    <p>اختر رقم الحلقة وابدأ المشاهدة فوراً</p>
 </header>
 
-<div class="main-container">
-    <h2 style="color: var(--primary);">روبن هود: السهم الناري</h2>
-
-    <div class="video-display-area" id="player-section">
-        <div class="responsive-iframe">
-            <iframe id="main-player" src="" allowfullscreen></iframe>
-        </div>
-    </div>
-
-    <h3 id="ep-indicator">اختر رقم الحلقة للمشاهدة:</h3>
-    
-    <div class="episodes-grid" id="episodes-list"></div>
+<!-- بنر أعلى الموقع -->
+<div class="banner-top">
+    <script>
+        atOptions = { 'key' : 'b8ba5b25ff25e41ea44c2df3a1b05378', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+    </script>
+    <script src="https://www.highperformanceformat.com/b8ba5b25ff25e41ea44c2df3a1b05378/invoke.js"></script>
 </div>
 
+<div class="main-container">
+    <div class="video-wrapper-outer">
+        <div id="videoPlayer" class="video-display-area">
+            <div class="responsive-iframe">
+                <iframe id="mainIframe" src="" allowfullscreen scrolling="no"></iframe>
+            </div>
+            <div id="episodeTitle" style="padding: 10px; background: var(--card); font-weight: bold;"></div>
+        </div>
+    </div>
+    <h2 id="status-msg">اضغط على رقم الحلقة للمشاهدة:</h2>
+    <div class="episodes-grid" id="buttonsGrid"></div>
+    <p class="info-text">جميع حلقات روبن هود (52 حلقة) متوفرة الآن بجودة عالية</p>
+</div>
+
+<!-- بنر أسفل الموقع -->
+<div class="banner-bottom">
+    <script>
+        atOptions = { 'key' : 'b8ba5b25ff25e41ea44c2df3a1b05378', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+    </script>
+    <script src="https://www.highperformanceformat.com/b8ba5b25ff25e41ea44c2df3a1b05378/invoke.js"></script>
+</div>
+
+<footer>جميع الحقوق محفوظة - صدى الطفولة &copy; 2026</footer>
+
 <script>
-    const adLink = "https://www.profitablecpmratenetwork.com/e41dj2h87?key=bef514b5ca3fa945e7a3b60e4a9ef21a";
-    
-    const robinLinks = [
-        "https://meyon.com.ye/videos/embed/4970f781-f0e8-4554-971d-2cd68770ec0d","https://meyon.com.ye/videos/embed/deb2b511-715d-4b30-a736-a48e580eb1ec","https://meyon.com.ye/videos/embed/fb355817-c62b-4e2c-a932-c6460295ad0b","https://meyon.com.ye/videos/embed/b5133a69-33a2-4959-88fd-aef78e6f8396","https://meyon.com.ye/videos/embed/c6c7dfaf-1864-4ce8-ba13-d06de4ab535a","https://meyon.com.ye/videos/embed/5f1a75e4-0b3b-420f-9293-3c48a3333579","https://meyon.com.ye/videos/embed/c67ccd83-e11f-4284-937d-9e489fe3138e","https://meyon.com.ye/videos/embed/4efaff69-99e5-4dc6-ac30-b10a6b78e7d8","https://meyon.com.ye/videos/embed/85ccae39-3e6b-4c4d-8475-3cd010ef31a8","https://meyon.com.ye/videos/embed/0052cebd-339c-4fa8-b167-da3f461d9862","https://meyon.com.ye/videos/embed/98024c32-731e-4446-aef9-9e48a01070c8","https://meyon.com.ye/videos/embed/2ead6d28-3d39-44b4-9004-0332019e2672","https://meyon.com.ye/videos/embed/cc53bc54-55e6-4752-88f8-81ff4c35e49a","https://meyon.com.ye/videos/embed/3bb3ef89-a0bf-4578-a3cc-06c1f4712192","https://meyon.com.ye/videos/embed/264aa2af-2189-4454-9fb9-d646acdce249","https://meyon.com.ye/videos/embed/9221549d-0e2a-44ce-9ab0-8a270a8fd68a","https://meyon.com.ye/videos/embed/ab332264-0f54-4334-91aa-a302643bf509","https://meyon.com.ye/videos/embed/eac9e768-a3d9-4b54-b342-ffe7cd5f749e","EMPTY","https://meyon.com.ye/videos/embed/df7134d0-c477-4662-bde3-021b96d3347b","https://meyon.com.ye/videos/embed/f5fec7ee-8662-4576-b66b-278b9644a54d","https://meyon.com.ye/videos/embed/a8986ec5-7f40-460f-aa05-ec49d766da1d","https://meyon.com.ye/videos/embed/3b007691-b2bd-4e5a-805f-bf5d4091899b","https://meyon.com.ye/videos/embed/b9406f57-2dc7-482e-bd25-f7dfc786cfc6","https://meyon.com.ye/videos/embed/c0357bf6-ddbc-4e35-a848-cf2135ead614","https://meyon.com.ye/videos/embed/ae2f31a7-c116-4f51-8ea8-0f8a175d30ad","https://meyon.com.ye/videos/embed/1db8631f-83e5-4802-ab18-787c0632e018","https://meyon.com.ye/videos/embed/f07068e6-f648-49e5-b3cd-d627cf5bc53c","https://meyon.com.ye/videos/embed/e1c97c17-8407-406f-8107-5d459021f9f4","https://meyon.com.ye/videos/embed/b121ca78-a240-4ea5-8cb1-ce306a65af7c","https://meyon.com.ye/videos/embed/aa6e5099-eb74-45ce-adab-fd8d12d95e4f","https://meyon.com.ye/videos/embed/f0e67e59-ecd5-4261-9c2c-8ba43013bb20","https://meyon.com.ye/videos/embed/be02aac3-9f78-4e25-b028-e67ffb9534a4","https://meyon.com.ye/videos/embed/0098f538-f602-4cce-9007-485d41a9a472","https://meyon.com.ye/videos/embed/6ec88beb-eed3-422d-9598-82682db28836","https://meyon.com.ye/videos/embed/fef75ede-d8e3-43ba-9bfd-503a2aacb82c","https://meyon.com.ye/videos/embed/4f63fc68-3a58-4638-99de-4b4cb223a10b","https://meyon.com.ye/videos/embed/5b3eb577-03b3-4c15-a3de-b9bac95506f7","https://meyon.com.ye/videos/embed/13f60796-d3ff-4592-a50e-2d063f36c3c7","https://meyon.com.ye/videos/embed/a88a04f9-260f-49af-beed-e7997b3e9b44","https://meyon.com.ye/videos/embed/a5bebf0e-5ca3-4dec-bf48-a1da52d32334","https://meyon.com.ye/videos/embed/9396b996-61a1-43dc-9353-0c4bc5f3dbbc","EMPTY","EMPTY","https://meyon.com.ye/videos/embed/1c590a49-4ad1-42ae-a733-c2e7a164d76a","https://meyon.com.ye/videos/embed/f59cc0ce-dfe5-4e87-b796-e8e445f2df63","https://meyon.com.ye/videos/embed/fbe871a7-22b1-4b3e-a025-677786dae114","https://meyon.com.ye/videos/embed/65814fcc-bd76-4fc5-94cc-a493cd023b0b","https://meyon.com.ye/videos/embed/ed0c0af5-5e93-4314-83ce-1b4fa8538e9f","https://meyon.com.ye/videos/embed/07ba6fc0-119d-41d6-bbcf-0f5994e45a27","https://meyon.com.ye/videos/embed/6be8d54d-4317-4bd2-9539-5dd2e27c4f8b","https://meyon.com.ye/videos/embed/1dc50eb5-2698-4992-a93b-302e9eb5f71c"
-    ];
-
-    function loadEpisodes() {
-        const list = document.getElementById('episodes-list');
-        list.innerHTML = '';
-
-        robinLinks.forEach((link, index) => {
-            const btn = document.createElement('button');
-            btn.className = 'ep-btn';
-            btn.innerText = index + 1;
-            btn.onclick = () => {
-                if(link === "EMPTY") {
-                    alert("الحلقة غير متوفرة حالياً");
-                    return;
-                }
-
-                // فتح رابط الإعلان في صفحة جديدة
-                window.open(adLink, '_blank');
-
-                // عرض الفيديو
-                document.getElementById('player-section').style.display = 'block';
-                document.getElementById('main-player').src = link;
-                document.getElementById('ep-indicator').innerText = "أنت تشاهد الآن الحلقة: " + (index + 1);
-                
-                // تمييز الزر النشط
-                document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // الانتقال للفيديو بسلاسة
-                document.getElementById('player-section').scrollIntoView({ behavior: 'smooth' });
-            };
-            list.appendChild(btn);
-        });
+    // التصحيح: عدد الحلقات الصحيح لمسلسل روبن هود هو 52
+    const totalEpisodes = 52;
+    const episodeLinks = [];
+    // الحلقة 1 = 3406، الحلقة 52 = 3457
+    for (let i = 0; i < totalEpisodes; i++) {
+        let episodeId = 3406 + i;
+        episodeLinks.push(`https://cartoony.net/watch/391/${episodeId}`);
     }
+
+    const grid = document.getElementById('buttonsGrid');
+    const player = document.getElementById('videoPlayer');
+    const iframe = document.getElementById('mainIframe');
+    const titleDisp = document.getElementById('episodeTitle');
+    
+    let scrollPosition = 0;
+    let bodyStylePosition = '';
+    let bodyStyleTop = '';
+
+    function lockPage() {
+        scrollPosition = window.scrollY;
+        bodyStylePosition = document.body.style.position || '';
+        bodyStyleTop = document.body.style.top || '';
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollPosition}px`;
+        document.body.style.width = '100%';
+    }
+
+    function unlockPage() {
+        document.body.style.position = bodyStylePosition;
+        document.body.style.top = bodyStyleTop;
+        document.body.style.width = '';
+        window.scrollTo(0, scrollPosition);
+    }
+
+    episodeLinks.forEach((link, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'ep-btn';
+        btn.innerText = index + 1;
+        btn.onclick = function() {
+            lockPage();
+            player.style.display = 'block';
+            iframe.src = link;
+            titleDisp.innerText = "أنت تشاهد الآن: روبن هود - الحلقة " + (index + 1);
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            setTimeout(() => { unlockPage(); }, 500);
+        };
+        grid.appendChild(btn);
+    });
+    
+    iframe.addEventListener('load', function() {
+        try {
+            iframe.contentWindow.addEventListener('scroll', function(e) {
+                iframe.contentWindow.scrollTo(0, 0);
+            });
+        } catch(e) { /* تجاهل أخطاء CORS */ }
+    });
 </script>
 </body>
 </html>
